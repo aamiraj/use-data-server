@@ -1,7 +1,7 @@
 const { body, validationResult } = require("express-validator");
-const dbconnect = require("../utils/dbConnect");
+const dbconnect = require("../dbConnect");
 const randomNumberGenerator = require("../utils/randomNumberGenerator");
-const data = dbconnect.dataCollection();
+const data = await dbconnect.dataCollection();
 
 const getAllUsers = (req, res, next) => {
   const limit = req.query.limit;
@@ -25,7 +25,7 @@ const getARandomUser = (req, res, next) => {
   res.status(200).send({ status: true, data: result });
 };
 
-const saveAUser = (req, res, next) => {
+const saveAUser = async (req, res, next) => {
   const userData = req.body;
 
   if (userData) {
@@ -41,7 +41,7 @@ const saveAUser = (req, res, next) => {
 
     const userDataWithId = { _id: (data.length + 1).toString(), ...userData };
     data.push(userDataWithId);
-    dbconnect.addToData(data);
+    await dbconnect.addToData(data);
     res.status(201).send({
       status: true,
       data: { savedUser: 1, message: "User is added." },
@@ -54,7 +54,7 @@ const saveAUser = (req, res, next) => {
   }
 };
 
-const updateAUser = (req, res, next) => {
+const updateAUser = async (req, res, next) => {
   const updateData = req.body;
   const id = req.params.id;
   const userData = data.find((user) => user._id === id);
@@ -76,7 +76,7 @@ const updateAUser = (req, res, next) => {
   }
 
   remainingUsers.push(userData);
-  dbconnect.addToData(remainingUsers);
+  await dbconnect.addToData(remainingUsers);
 
   res.status(200).send({
     status: true,
@@ -85,7 +85,7 @@ const updateAUser = (req, res, next) => {
   });
 };
 
-const updateMultipleUsers = (req, res, next) => {
+const updateMultipleUsers = async (req, res, next) => {
   const multipleUsersData = req.body;
 
   for (let updateData of multipleUsersData) {
@@ -103,18 +103,18 @@ const updateMultipleUsers = (req, res, next) => {
     }
   }
 
-  dbconnect.addToData(data);
+  await dbconnect.addToData(data);
 
   res.status(200).send({ status: true, data: data, messege: "Multiple users updated successfully." });
 };
 
-const deleteAUser = (req, res, next) => {
+const deleteAUser = async (req, res, next) => {
   const id = req.params.id;
   const userData = data.find((user) => user._id === id);
 
   if (userData) {
     const remainingUsers = data.filter((user) => user._id !== id);
-    dbconnect.addToData(remainingUsers);
+    await dbconnect.addToData(remainingUsers);
     res.status(200).send({
       status: true,
       message: "User deleted successfully.",
