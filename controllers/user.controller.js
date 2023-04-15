@@ -1,7 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const dbconnect = require("../dbConnect");
 const randomNumberGenerator = require("../utils/randomNumberGenerator");
-const data = await dbconnect.dataCollection();
+const data = dbconnect.dataCollection();
 
 const getAllUsers = (req, res, next) => {
   const limit = req.query.limit;
