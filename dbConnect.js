@@ -11,7 +11,7 @@ function dataCollection() {
 function addToData(data) {
   const dataJson = JSON.stringify(data);
   const jsonFile = path.join(process.cwd(), "json", "userData.json");
-  fs.writeFile(jsonFile, dataJson);
+  fs.writeFileSync(jsonFile, dataJson);
 }
 
 module.exports = { dataCollection, addToData };

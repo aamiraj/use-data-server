@@ -39,17 +39,25 @@ const saveAUser = (req, res, next) => {
       return;
     }
 
-    const userDataWithId = { _id: (data.length + 1).toString(), ...userData };
+    const generatedId = randomNumberGenerator(
+      100000000000,
+      999999999999,
+      1000000000000
+    );
+    const userDataWithId = { _id: generatedId.toString(), ...userData };
     data.push(userDataWithId);
     dbconnect.addToData(data);
     res.status(201).send({
       status: true,
-      data: { savedUser: 1, message: "User is added." },
+      savedUser: 1,
+      message: "User is added.",
+      data: userDataWithId,
     });
   } else {
     res.status(200).send({
       status: false,
-      data: { savedUser: 0, message: "Request body does not contain user." },
+      savedUser: 0,
+      message: "Request body does not contain user.",
     });
   }
 };
